@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\willi\\source\\repos\\XUnitTestProject1\\XUnitTestProject1\\XUnitTestProject1.csproj": {}
+    "C:\\Users\\willi\\Desktop\\integration-test\\XUnitTestProject1\\XUnitTestProject1\\XUnitTestProject1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\willi\\source\\repos\\XUnitTestProject1\\XUnitTestProject1\\XUnitTestProject1.csproj": {
+    "C:\\Users\\willi\\Desktop\\integration-test\\XUnitTestProject1\\XUnitTestProject1\\XUnitTestProject1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\willi\\source\\repos\\XUnitTestProject1\\XUnitTestProject1\\XUnitTestProject1.csproj",
+        "projectUniqueName": "C:\\Users\\willi\\Desktop\\integration-test\\XUnitTestProject1\\XUnitTestProject1\\XUnitTestProject1.csproj",
         "projectName": "XUnitTestProject1",
-        "projectPath": "C:\\Users\\willi\\source\\repos\\XUnitTestProject1\\XUnitTestProject1\\XUnitTestProject1.csproj",
+        "projectPath": "C:\\Users\\willi\\Desktop\\integration-test\\XUnitTestProject1\\XUnitTestProject1\\XUnitTestProject1.csproj",
         "packagesPath": "C:\\Users\\willi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\willi\\source\\repos\\XUnitTestProject1\\XUnitTestProject1\\obj\\",
+        "outputPath": "C:\\Users\\willi\\Desktop\\integration-test\\XUnitTestProject1\\XUnitTestProject1\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -64,6 +64,10 @@
             "System.Data.SqlClient": {
               "target": "Package",
               "version": "[4.8.2, )"
+            },
+            "System.Management.Automation": {
+              "target": "Package",
+              "version": "[7.0.0, )"
             },
             "coverlet.collector": {
               "target": "Package",
