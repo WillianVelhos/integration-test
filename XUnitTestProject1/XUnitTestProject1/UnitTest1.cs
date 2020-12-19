@@ -25,5 +25,10 @@ namespace XUnitTestProject1
         {
 
         }
+
+        public Task DisposeAsync()
+        {
+            return DockerSqlDatabaseUtilities.EnsureDockerStoppedAndRemovedAsync(_dockerContainerId);
+        }
     }
 }
