@@ -2,6 +2,8 @@ using System;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Management.Automation.Runspaces;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -12,9 +14,8 @@ namespace XUnitTestProject1
     {
         public const string DATABASE_NAME_PLACEHOLDER = "@@databaseName@@";
         private string _dockerContainerId;
-        private string _dockerSqlPort;
         public const string SQLSERVER_SA_PASSWORD = "yourStrong(!)Password";
-
+        private Runspace _runspace;
 
         public UnitTest1()
         {
@@ -26,21 +27,21 @@ namespace XUnitTestProject1
 
 
             var containerName = "IntegrationTests" + Guid.NewGuid();
+            var freePort = GetFreePort();
 
-            var runspace = RunspaceFactory.CreateRunspace();
-            runspace.Open();
-            var pipeline = runspace.CreatePipeline();
-            pipeline.Commands.AddScript($"docker run --name {containerName}  -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD={SQLSERVER_SA_PASSWORD}' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2017-latest");
+            _runspace = RunspaceFactory.CreateRunspace();
+            _runspace.Open();
+            var pipeline = _runspace.CreatePipeline();
+            pipeline.Commands.AddScript($"docker run --name {containerName} -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD={SQLSERVER_SA_PASSWORD}' -p {freePort}:1433 -d mcr.microsoft.com/mssql/server:2017-latest");
             pipeline.Commands.Add("Out-String");
             var results = pipeline.Invoke();
-            runspace.Close();
 
             var dale = results.First();
-             _dockerContainerId = results.First().ToString().Replace("\r\n","");
+            _dockerContainerId = results.First().ToString().Replace("\r\n", "");
 
-            Console.WriteLine("ContainerId: " _dockerContainerId);
+            Console.WriteLine("ContainerId: " + _dockerContainerId);
 
-            await WaitUntilDatabaseAvailableAsync("1433");
+            await WaitUntilDatabaseAvailableAsync(freePort);
         }
 
         [Fact]
@@ -80,9 +81,24 @@ namespace XUnitTestProject1
             return;
         }
 
+        private static string GetFreePort()
+        {
+            var tcpListener = new TcpListener(IPAddress.Loopback, 0);
+            tcpListener.Start();
+            var port = ((IPEndPoint)tcpListener.LocalEndpoint).Port;
+            tcpListener.Stop();
+            return port.ToString();
+        }
+
         public Task DisposeAsync()
         {
-            return DockerSqlDatabaseUtilities.EnsureDockerStoppedAndRemovedAsync(_dockerContainerId);
+            var pipeline = _runspace.CreatePipeline();
+            pipeline.Commands.AddScript($"docker stop {_dockerContainerId} && docker rm {_dockerContainerId}");
+            pipeline.InvokeAsync();
+
+            _runspace.Close();
+            Console.WriteLine("Container Excluido");
+            return Task.FromResult(0);
         }
     }
 }
